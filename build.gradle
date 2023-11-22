@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'org.springframework.samples'
-version = '3.1.0'
+version = '3.1.5'
 sourceCompatibility = '17'
 
 repositories {
@@ -23,27 +23,6 @@ ext.webjarsBootstrapVersion = "5.2.3"
 
 dependencies {
     testImplementation 'org.testcontainers:mysql'
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            def mavenreleasesurl = "http://localhost:8082/repository/maven-releases/"
-            def mavensnapshoturl = "http://localhost:8082/repository/maven-snapshot/"
-            allowInsecureProtocol = true
-            url = version.endsWith('SNAPSHOT') ? mavensnapshoturl : mavenreleasesurl
-            credentials {
-                username = System.getenv("NEXUS_USER")
-                password = System.getenv("NEXUS_PASS")
-            }
-        }
-    }
 }
 
 dependencies {
@@ -71,6 +50,34 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+task publishToNexus {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                def mavenreleasesurl = "http://localhost:8082/repository/maven-releases/"
+                def mavensnapshoturl = "http://localhost:8082/repository/maven-snapshot/"
+                allowInsecureProtocol = true
+                url = version.endsWith('SNAPSHOT') ? mavensnapshoturl : mavenreleasesurl
+                credentials {
+                    username = System.getenv("NEXUS_USER")
+                    password = System.getenv("NEXUS_PASS")
+                }
+            }
+        }
+    }
+
+    dependsOn 'publish'
+    doLast {
+        logger.lifecycle("Publishing to Nexus completed.")
+    }
 }
 
 jar {
