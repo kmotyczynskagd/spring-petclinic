@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="https://maven.apache.org/SETTINGS/1.1.0"
+        xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://maven.apache.org/SETTINGS/1.1.0 https://maven.apache.org/xsd/settings-1.1.0.xsd">
+
+  <servers>
+    <server>
+      <id>maven-snapshot</id>
+      <username>${env.NEXUS_USER}</username>
+      <password>${env.NEXUS_PASS}</password>
+    </server>
+    <server>
+      <id>maven-releases</id>
+      <username>${env.NEXUS_USER}</username>
+      <password>${env.NEXUS_PASS}</password>
+    </server>
+  </servers>
+
+  <mirrors>
+    <mirror>
+      <id>maven-central1</id>
+      <name>user</name>
+      <url>http://localhost:8082/repository/maven-central1/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+
+</settings>
