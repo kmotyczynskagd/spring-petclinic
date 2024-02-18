@@ -81,6 +81,18 @@ task publishToNexus {
     }
 }
 
+task openTestResults(dependsOn: 'build') {
+    doLast {
+        def reportFile = new File("${project.buildDir}/reports/tests/test/index.html")
+        
+        if (reportFile.exists()) {
+            java.awt.Desktop.getDesktop().browse(reportFile.toURI())
+        } else {
+            println "Test results not found at: ${indexHtmlFile.path}"
+        }
+    }
+}
+
 jar {
     enabled = false
 }
