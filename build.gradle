@@ -96,3 +96,4 @@ task openTestResults(dependsOn: 'build') {
 jar {
     enabled = false
 }
+
