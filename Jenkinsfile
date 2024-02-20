@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkstyle') {
             when { 
-                branch pattern: "feature/.*", comparator: "REGEXP"
+                branch 'feature/*'
             }
             steps {
                 sh './gradlew checkstyleMain checkstyleTest'
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Test') {
             when { 
-                branch pattern: "feature/.*", comparator: "REGEXP"
+                branch 'feature/*'
             }
             steps {
                 sh './gradlew test'
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Build') {
             when { 
-                branch pattern: "feature/.*", comparator: "REGEXP"
+                branch 'feature/*'
             }
             steps {
                 sh './gradlew build -x test'
@@ -34,7 +34,7 @@ pipeline {
             when {
                 anyOf {
                     branch 'main'
-                    branch pattern: "feature/.*", comparator: "REGEXP"
+                    branch 'feature/*'
                 }
             }
             environment {
