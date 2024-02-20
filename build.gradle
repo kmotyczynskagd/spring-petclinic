@@ -5,6 +5,17 @@ plugins {
     id 'org.graalvm.buildtools.native' version '0.9.23'
     id 'pl.allegro.tech.build.axion-release' version '1.15.1'
     id 'maven-publish'
+    id 'checkstyle'
+}
+
+// checkstyle {
+//     toolVersion = '10.3.3'
+//     configFile file("config/checkstyle/checkstyle.xml")
+// }
+
+checkstyle {
+    // toolVersion '7.8.2'
+    toolVersion = '10.3.3'
 }
 
 group = 'org.springframework.samples'
@@ -92,6 +103,37 @@ task openTestResults(dependsOn: 'build') {
         }
     }
 }
+
+// tasks.withType(Checkstyle) {
+//     reports {
+//         xml.required = false
+//         html.required = true
+//         html.stylesheet resources.text.fromFile('config/xsl/checkstyle-custom.xsl')
+//     }
+// }
+
+// tasks.withType(Checkstyle) {
+//     reports {
+//         sarif.required = true
+//     }
+// }
+
+// task checkstyleHtml {
+//     doLast {
+//         ant.xslt(in: checkstyleMain.reports.xml.destination,
+//                 style: file('/config/checkstyle-noframes-sorted.xsl'),
+//                 out: new File(checkstyleMain.reports.xml.destination.parent, 'main.html'))
+//     }
+// }
+
+// checkstyleMain.finalizedBy checkstyleHtml
+// tasks.withType(Checkstyle) {
+//     reports {
+//         xml.required = false
+//         html.required = true
+//         html.stylesheet resources.text.fromFile('/config/checkstyle-noframes-sorted.xsl')
+//     }
+// }
 
 jar {
     enabled = false
