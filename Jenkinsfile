@@ -31,6 +31,12 @@ pipeline {
         }
         
         stage('Create Docker Image') {
+            when {
+                anyOf {
+                    branch 'main'
+                    changeRequest target: 'main'
+                }
+            }
             environment {
                 DOCKER_TAG = "mr" 
             }
