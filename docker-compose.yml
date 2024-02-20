@@ -33,3 +33,21 @@ services:
       - POSTGRES_DB=petclinic
     profiles:
     - postgres
+  nexus:
+    image: sonatype/nexus3
+    volumes:
+      - "nexus-data:/sonatype-work"
+    ports:
+      - "8082:8081"
+volumes:
+  nexus-data: {}
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8083:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+  ssh-agent:
+    image: jenkins/ssh-agent
+volumes:
+  jenkins_home:
