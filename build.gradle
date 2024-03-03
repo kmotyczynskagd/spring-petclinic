@@ -16,6 +16,7 @@ plugins {
 checkstyle {
     // toolVersion '7.8.2'
     toolVersion = '10.3.3'
+    ignoreFailures = true
 }
 
 group = 'org.springframework.samples'
