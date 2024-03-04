@@ -21,4 +21,4 @@ RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaage
 RUN chmod +x $JMX_DIR/$JMX_JAR
 COPY prometheus/config.yaml $JMX_DIR/config.yaml
 
-CMD ["/bin/bash", "-c", "java -javaagent:$JMX_DIR/$JMX_JAR=10254:$JMX_DIR/config.yaml -jar app.jar"]
+ENTRYPOINT ["/bin/bash", "-c", "java -javaagent:$JMX_DIR/$JMX_JAR=10254:$JMX_DIR/config.yaml -jar app.jar"]

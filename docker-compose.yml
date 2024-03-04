@@ -12,6 +12,7 @@ services:
     command: ["java", "-jar", "app.jar", "-Dspring.profiles.active=mysql"]
     depends_on:
       - mysql
+
   mysql:
     image: mysql:8.0
     environment:
@@ -23,6 +24,7 @@ services:
       - "./conf.d:/etc/mysql/conf.d:ro"
     profiles:
     - mysql
+
   postgres:
     image: postgres:15.3
     ports:
@@ -33,6 +35,7 @@ services:
       - POSTGRES_DB=petclinic
     profiles:
     - postgres
+    
   nexus:
     image: sonatype/nexus3
     volumes:
@@ -45,6 +48,33 @@ services:
       - "8083:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - /Users/kmotyczynska/GridDynamics/spring-petclinic/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana-enterprise
+    ports:
+      - "3000:3000"
+
+  loki:
+    image: grafana/loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail
+    ports:
+      - "8082:80"
+    volumes:
+      - /tmp/spring-petclinic.log:/spring-petclinic.log
+      - /Users/kmotyczynska/GridDynamics/spring-petclinic/prometheus/promtail.yaml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
 
 volumes:
   nexus-data:

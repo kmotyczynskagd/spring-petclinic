@@ -1,0 +1,11 @@
+clients:
+    - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: spring-petclinic-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: generated-spring-petclinic-logs
+          __path__: /spring-petclinic.log
