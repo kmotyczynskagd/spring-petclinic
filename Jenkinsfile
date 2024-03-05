@@ -41,10 +41,12 @@ pipeline {
                 DOCKER_TAG = "mr" 
             }
             steps {
+                script {
+                    if (env.BRANCH_NAME == "main"){
+                        DOCKER_TAG = "main"
+                    }
+                }
                 sh '''
-                if [[ "${BRANCH_NAME}" == "main" ]]; then
-                    DOCKER_TAG = "main"
-                fi
                 docker build -t "${DOCKER_TAG}:${GIT_COMMIT:0:7}" .
                 docker push "${DOCKER_TAG}:${GIT_COMMIT:0:7}"
                 '''
