@@ -72,14 +72,15 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'GCLOUD_CREDS', variable: 'GCLOUD_CREDS')]) {
-                        sh"""
+                        sh'''
                         gcloud auth activate-service-account --key-file='$GCLOUD_CREDS'
                         CONTAINER_NAME="spring-petclinic"
-                        INSTANCES_IP_ADDRESSES=$(gcloud compute instances list --zones europe-central2-c --filter="name ~ ^kmotyczynska-app" --format='value(networkInterfaces[0].accessConfigs[0].natIP)')
-                        docker stop ${CONTAINER_NAME} && docker rm ${CONTAINER_NAME}
-                        docker run --name ${CONTAINER_NAME} "localhost:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}"
-                        docker rmi "localhost:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}"
-                        """
+                        for ip_address in $(gcloud compute instances list --zones europe-central2-c --filter="name ~ ^kmotyczynska-app" --format='value(networkInterfaces[0].accessConfigs[0].networkIP))'); do
+                            ssh kmotyczynska@${ip_address} -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa \
+                                'if [[ "$(sudo docker ps -a -q -f name=${CONTAINER_NAME})" ]]; then sudo docker stop ${CONTAINER_NAME} && docker rm ${CONTAINER_NAME} fi; \
+                                sudo docker run --name ${CONTAINER_NAME} "localhost:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}"'
+                        done
+                        '''
                     }
                 }
             }
