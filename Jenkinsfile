@@ -59,26 +59,18 @@ pipeline {
             }
         }
 
-        stage('Replace in project version dots to dashes') {
-            steps {
-                script {
-                    env.PROJECT_VERSIONGCP = env.PROJECT_VERSION.replace(".", "-")
-                    echo "Project version is: $PROJECT_VERSION"
-                }
-            }
-        }
-
-        stage('Update docker image on GCP instance group') {
+        stage('Update application on GCP instance group VMs') {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'GCLOUD_CREDS', variable: 'GCLOUD_CREDS')]) {
                         sh'''
                         gcloud auth activate-service-account --key-file='$GCLOUD_CREDS'
                         CONTAINER_NAME="spring-petclinic"
-                        for ip_address in $(gcloud compute instances list --zones europe-central2-c --filter="name ~ ^kmotyczynska-app" --format='value(networkInterfaces[0].accessConfigs[0].networkIP))'); do
+                        CICD_VM_IP="$(gcloud compute instances describe kmotyczynska-cicd --zone europe-central2-c --format='value(networkInterfaces[0].networkIP)')"
+                        for ip_address in $(gcloud compute instances list --zones europe-central2-c --filter="name ~ ^kmotyczynska-app" --format='value(networkInterfaces[0].networkIP)'); do
                             ssh kmotyczynska@${ip_address} -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa \
                                 'if [[ "$(sudo docker ps -a -q -f name=${CONTAINER_NAME})" ]]; then sudo docker stop ${CONTAINER_NAME} && docker rm ${CONTAINER_NAME} fi; \
-                                sudo docker run --name ${CONTAINER_NAME} "localhost:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}"'
+                                sudo docker run --name ${CONTAINER_NAME} -p 80:8080 "${CICD_VM_IP}:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}"'
                         done
                         '''
                     }
