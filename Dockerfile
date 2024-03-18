@@ -12,6 +12,7 @@ FROM eclipse-temurin:17-jre-alpine
 ENV JMX_VERSION 0.20.0
 ENV JMX_JAR jmx_prometheus_javaagent-$JMX_VERSION.jar
 ENV JMX_DIR /opt/jmx_exporter
+ENV APP_PROFILE mysql
 
 COPY --from=build build/libs/*.jar app.jar
 
@@ -21,4 +22,4 @@ RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaage
 RUN chmod +x $JMX_DIR/$JMX_JAR
 COPY prometheus/config.yaml $JMX_DIR/config.yaml
 
-ENTRYPOINT ["/bin/sh", "-c", "java -javaagent:$JMX_DIR/$JMX_JAR=10254:$JMX_DIR/config.yaml -jar app.jar"]
+ENTRYPOINT ["/bin/sh", "-c", "java -javaagent:$JMX_DIR/$JMX_JAR=10254:$JMX_DIR/config.yaml -jar app.jar -Dspring.profiles.active=$APP_PROFILE"]
