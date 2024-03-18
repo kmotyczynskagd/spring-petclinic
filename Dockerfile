@@ -5,7 +5,7 @@ COPY gradle gradle
 COPY config config
 COPY build.gradle settings.gradle ./
 COPY src src
-RUN ./gradlew clean build -x test
+RUN ./gradlew clean build -x test -x processTestAot
 
 FROM eclipse-temurin:17-jre-alpine
 
