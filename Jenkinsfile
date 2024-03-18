@@ -64,7 +64,7 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'GCLOUD_CREDS', variable: 'GCLOUD_CREDS')]) {
                         sh'''
-                        gcloud auth activate-service-account --key-file='$GCLOUD_CREDS'
+                        gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
                         CONTAINER_NAME="spring-petclinic"
                         CICD_VM_IP="$(gcloud compute instances describe kmotyczynska-cicd --zone europe-central2-c --format='value(networkInterfaces[0].networkIP)')"
                         for ip_address in $(gcloud compute instances list --zones europe-central2-c --filter="name ~ ^kmotyczynska-app" --format='value(networkInterfaces[0].networkIP)'); do
