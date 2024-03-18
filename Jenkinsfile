@@ -69,9 +69,7 @@ pipeline {
                         CONTAINER_NAME="spring-petclinic"
                         CICD_VM_IP="$(gcloud compute instances describe kmotyczynska-cicd --zone europe-central2-c --format='value(networkInterfaces[0].networkIP)')"
                         for ip_address in $(gcloud compute instances list --zones europe-central2-c --filter="name ~ ^kmotyczynska-app" --format='value(networkInterfaces[0].networkIP)'); do
-                            ssh kmotyczynska@${ip_address} -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} \
-                                "if sudo docker ps -a -q -f name=${CONTAINER_NAME} | grep -q .; then sudo docker stop ${CONTAINER_NAME} && sudo docker rm ${CONTAINER_NAME} fi; \
-                                sudo docker run --name ${CONTAINER_NAME} -p 80:8080 \"${CICD_VM_IP}:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}\""; \
+                            ssh kmotyczynska@${ip_address} -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} "if sudo docker ps -a -q -f name=${CONTAINER_NAME} | grep -q .; then sudo docker stop ${CONTAINER_NAME} && sudo docker rm ${CONTAINER_NAME}; fi; sudo docker run --name ${CONTAINER_NAME} -p 80:8080 \"${CICD_VM_IP}:8082/repository/spring-petclinic/spring-petclinic:${PROJECT_VERSION}\"";
                         done
                         '''
                     }
