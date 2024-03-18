@@ -5,7 +5,7 @@ COPY gradle gradle
 COPY config config
 COPY build.gradle settings.gradle ./
 COPY src src
-RUN ./gradlew clean build -x test -x processTestAot
+RUN ./gradlew clean build -x test
 
 FROM eclipse-temurin:17-jre-alpine
 
@@ -21,4 +21,4 @@ RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaage
 RUN chmod +x $JMX_DIR/$JMX_JAR
 COPY prometheus/config.yaml $JMX_DIR/config.yaml
 
-ENTRYPOINT ["/bin/bash", "-c", "java -javaagent:$JMX_DIR/$JMX_JAR=10254:$JMX_DIR/config.yaml -jar app.jar"]
+ENTRYPOINT ["/bin/sh", "-c", "java -javaagent:$JMX_DIR/$JMX_JAR=10254:$JMX_DIR/config.yaml -jar app.jar"]
