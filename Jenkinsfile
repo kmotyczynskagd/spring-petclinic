@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Get Project Version') {
+        stage('Release project version') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'githubToken', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
